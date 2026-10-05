@@ -30,6 +30,19 @@ export function toast(msg, big) {
   setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 450); }, big ? 3800 : 2600);
 }
 
+// In-page confirm dialog (window.confirm is unavailable in some embeds).
+export function askConfirm(message, okLabel = '確定') {
+  return new Promise(resolve => {
+    $('confirmMsg').textContent = message;
+    $('confirmOk').textContent = okLabel;
+    $('confirm').classList.remove('hidden');
+    const done = v => { $('confirm').classList.add('hidden'); $('confirmOk').onclick = $('confirmCancel').onclick = null; resolve(v); };
+    $('confirmOk').onclick = () => done(true);
+    $('confirmCancel').onclick = () => done(false);
+    $('confirmOk').focus();
+  });
+}
+
 // ---------------------------------------------------------------- toolbar / tray
 export function renderTools() {
   $('tools').innerHTML = TOOLS.map((t, i) => {
@@ -187,18 +200,18 @@ export function initUI(actions) {
 
   $('btnLayout').addEventListener('click', () => { renderLayouts(); $('layouts').classList.remove('hidden'); });
   $('btnLayoutClose').addEventListener('click', () => $('layouts').classList.add('hidden'));
-  $('layoutList').addEventListener('click', e => {
+  $('layoutList').addEventListener('click', async e => {
     const b = e.target.closest('button');
     if (!b || b.disabled) return;
     if (b.dataset.wipe) {
-      if (!confirm('確定清除所有進度？任務、收藏與地形都會重置。')) return;
+      if (!await askConfirm('清除所有進度？任務、收藏與地形都會重置。', '清除存檔')) return;
       actions.wipe();
       $('layouts').classList.add('hidden');
       return;
     }
     const key = b.dataset.layout;
     if (key === game.st.layout && !b.dataset.reset) { $('layouts').classList.add('hidden'); return; }
-    if (!confirm('重置地形？已擺放的裝飾會收回背包。')) return;
+    if (!await askConfirm('重置地形？已擺放的裝飾會收回背包。', '重置地形')) return;
     actions.newBeach(key);
     $('layouts').classList.add('hidden');
   });
