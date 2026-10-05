@@ -48,7 +48,16 @@
     <input id="brush" type="range" min="0.3" max="2.5" step="0.05" value="0.9">
   </label>
   <div class="opt seg" id="waveSeg" role="radiogroup" aria-label="海浪">
-    <button data-v="calm">平靜</button><button data-v="normal">正常</button><button data-v="rough">洶湧</button>
+    <button data-v="calm">平靜</button><button data-v="normal">正常</button><button data-v="rough">洶湧</button><button data-v="doom" class="doom-btn">末日</button>
+  </div>
+  <label class="opt">
+    <span>浪高</span>
+    <input id="waveScale" type="range" min="0.5" max="3" step="0.1" value="1">
+    <b id="waveScaleTxt" class="opt-val">×1.0</b>
+  </label>
+  <div id="doomRow" class="opt doom-row hidden">
+    <button id="btnTsunami">🌊 召喚海嘯</button>
+    <span id="doomInfo"></span>
   </div>
   <div class="opt-btns">
     <button id="btnLayout" title="切換海灘">🗺️</button>
@@ -64,6 +73,18 @@
 <!-- Toolbar -->
 <div id="tools" class="panel"></div>
 
+<!-- Camera controls -->
+<div id="cam" class="panel" aria-label="視角">
+  <button id="btnNav" title="視角模式：左鍵拖曳旋轉（也可按住空白鍵或 Alt）">✋</button>
+  <button id="btnRotL" title="向左轉 (Q)">⟲</button>
+  <button id="btnRotR" title="向右轉 (E)">⟳</button>
+  <button id="btnZoomIn" title="拉近 (+)">＋</button>
+  <button id="btnZoomOut" title="拉遠 (-)">－</button>
+  <button id="btnHome" title="重設視角 (R)">⌂</button>
+</div>
+
+<div id="alert" class="alert hidden" role="alert"></div>
+<pre id="perf" class="hidden"></pre>
 <div id="toasts"></div>
 
 <!-- Start / help overlay -->
@@ -73,11 +94,12 @@
     <p class="sub">在溫暖的熱帶海灘上堆一座沙堡，挖護城河、刻城垛，看潮水慢慢湧上來。</p>
     <ul class="keys">
       <li><kbd>左鍵</kbd> 使用工具 / 撿起寶物</li>
-      <li><kbd>右鍵拖曳</kbd> 旋轉視角　<kbd>Shift+右鍵</kbd> 平移</li>
+      <li><kbd>右鍵拖曳</kbd> 或 <kbd>空白鍵/Alt + 左鍵拖曳</kbd> 旋轉視角</li>
+      <li><kbd>Q</kbd> <kbd>E</kbd> 轉向　<kbd>R</kbd> 重設視角　<kbd>Shift+右鍵</kbd> 平移　右側 ✋ 按鈕可切換視角模式</li>
       <li><kbd>滾輪</kbd> 縮放　<kbd>1</kbd>–<kbd>6</kbd> 切換工具　<kbd>[</kbd> <kbd>]</kbd> 筆刷大小</li>
       <li><kbd>Ctrl+Z</kbd> 復原上一筆　觸控：單指工具、雙指旋轉縮放</li>
     </ul>
-    <p class="tip">小提示：堆沙和抹平會把沙壓實，壓實的濕沙能立起陡峭的牆；海水會慢慢把它泡鬆沖垮。</p>
+    <p class="tip">小提示：堆沙和抹平會把沙壓實，壓實的濕沙能立起陡峭的牆；海水會慢慢把它泡鬆沖垮。想挑戰的話，試試左下角的「末日」模式。</p>
     <button id="btnStart" class="primary">開始堆沙</button>
     <p class="fine">非官方粉絲致敬作品，靈感來自 Bubblebird Studio 的《Sandcastle》。</p>
   </div>
