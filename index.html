@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>沙堡 網頁版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<!-- HUD: top-left -->
+<div id="hud" class="panel">
+  <div class="hud-row">
+    <svg class="ico" viewBox="0 0 24 24"><path d="M5 8h14l-1.6 11.2a2 2 0 0 1-2 1.8H8.6a2 2 0 0 1-2-1.8z" fill="#e9b44c"/><path d="M4 8h16" stroke="#8a5a1c" stroke-width="2" stroke-linecap="round"/><path d="M8 8a4 4 0 0 1 8 0" fill="none" stroke="#8a5a1c" stroke-width="1.6"/></svg>
+    <div class="hud-main">
+      <div class="hud-label">濕沙 <b id="sandTxt">0</b> 桶</div>
+      <div class="bar"><i id="sandBar"></i></div>
+    </div>
+  </div>
+  <div class="hud-stats">
+    <span title="海平面以上最高點">🏰 <b id="hTxt">0.0</b> m</span>
+    <span title="潮汐">🌊 <b id="tideTxt">—</b></span>
+    <span title="已收集寶物">✨ <b id="colTxt">0</b></span>
+  </div>
+</div>
+
+<!-- Objectives: top-right -->
+<div id="obj" class="panel paper">
+  <button id="objToggle" class="obj-head" aria-expanded="true">
+    <span>任務目標</span><span id="objCount">0/8</span>
+  </button>
+  <ul id="objList"></ul>
+</div>
+
+<!-- Bottom-left settings -->
+<div id="opts" class="panel">
+  <label class="opt">
+    <span>筆刷</span>
+    <input id="brush" type="range" min="0.3" max="2.5" step="0.05" value="0.9">
+  </label>
+  <div class="opt seg" id="waveSeg" role="radiogroup" aria-label="海浪">
+    <button data-v="calm">平靜</button><button data-v="normal">正常</button><button data-v="rough">洶湧</button>
+  </div>
+  <div class="opt-btns">
+    <button id="btnLayout" title="切換海灘">🗺️</button>
+    <button id="btnUndo" title="復原 (Ctrl+Z)">↶</button>
+    <button id="btnSound" title="聲音">🔊</button>
+    <button id="btnHelp" title="說明">?</button>
+  </div>
+</div>
+
+<!-- Decoration tray -->
+<div id="tray" class="panel hidden"></div>
+
+<!-- Toolbar -->
+<div id="tools" class="panel"></div>
+
+<div id="toasts"></div>
+
+<!-- Start / help overlay -->
+<div id="intro" class="overlay">
+  <div class="card">
+    <h1>沙堡<small>網頁版</small></h1>
+    <p class="sub">在溫暖的熱帶海灘上堆一座沙堡，挖護城河、刻城垛，看潮水慢慢湧上來。</p>
+    <ul class="keys">
+      <li><kbd>左鍵</kbd> 使用工具 / 撿起寶物</li>
+      <li><kbd>右鍵拖曳</kbd> 旋轉視角　<kbd>Shift+右鍵</kbd> 平移</li>
+      <li><kbd>滾輪</kbd> 縮放　<kbd>1</kbd>–<kbd>6</kbd> 切換工具　<kbd>[</kbd> <kbd>]</kbd> 筆刷大小</li>
+      <li><kbd>Ctrl+Z</kbd> 復原上一筆　觸控：單指工具、雙指旋轉縮放</li>
+    </ul>
+    <p class="tip">小提示：堆沙和抹平會把沙壓實，壓實的濕沙能立起陡峭的牆；海水會慢慢把它泡鬆沖垮。</p>
+    <button id="btnStart" class="primary">開始堆沙</button>
+    <p class="fine">非官方粉絲致敬作品，靈感來自 Bubblebird Studio 的《Sandcastle》。</p>
+  </div>
+</div>
+
+<!-- Layout chooser -->
+<div id="layouts" class="overlay hidden">
+  <div class="card">
+    <h2>選擇海灘</h2>
+    <div id="layoutList" class="layout-list"></div>
+    <p class="fine">切換海灘會重置地形，已擺放的裝飾會收回背包。</p>
+    <button id="btnLayoutClose">關閉</button>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
